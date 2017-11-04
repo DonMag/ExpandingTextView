@@ -18,15 +18,16 @@ class ViewController: UIViewController {
 	
 	private var observerContext = 0
 	private var isInsideObserver: Bool = false
-	private var isKeyboardShowing: Bool = false
+	private var isBeingEdited: Bool = false
 	private var elementsHeight: CGFloat = 0.0
 
 	// this will be set / updated each time the keyboard is shown
+	// and each time the layout changes
+	// so the initial value is inconsequential
 	private var maxTextViewHeight: CGFloat = 240.0;
 	
 	// this is a less-than-or-equal-to constraint - updated when the keyboard is shown
 	@IBOutlet weak var textViewHeightConstraint: NSLayoutConstraint!
-	
 	
 	let rightButtonItem = UIBarButtonItem.init(
 		title: "Done",
@@ -44,7 +45,7 @@ class ViewController: UIViewController {
 		
 		// generate 7 lines of text to pre-fill the text view
 		var s = ""
-		for i in 1...16 {
+		for i in 1...36 {
 			s += "\(i)\n"
 		}
 		s += "end of text"
@@ -62,33 +63,41 @@ class ViewController: UIViewController {
 		}
 	}
 	
+	func updateElementsHeight() -> Void {
+		
+		elementsHeight = 0
+		
+		// add top view's height
+		elementsHeight += theTopView.frame.height
+		
+		// add bottom view's height
+		elementsHeight += theBottomView.frame.height
+		
+		// add stack view's Y offset
+		elementsHeight += theStackView.frame.origin.y
+		
+		// 3 views in the stack view, so add 2 x Spacing
+		elementsHeight += theStackView.spacing * 2
+		
+		// add stack view's Spacing again, for some "padding" below the bottom view
+		elementsHeight += theStackView.spacing
+		
+	}
+	
 	override func viewDidLayoutSubviews() {
 		super.viewDidLayoutSubviews()
+
+		updateElementsHeight()
 		
-		if !isKeyboardShowing {
+		if !isBeingEdited {
 			if let window = self.view.window?.frame {
-				elementsHeight = 0
-				
-				// add top view's height
-				elementsHeight += theTopView.frame.height
-				
-				// add bottom view's height
-				elementsHeight += theBottomView.frame.height
-				
-				// add stack view's Y offset
-				elementsHeight += theStackView.frame.origin.y
-				
-				// 3 views in the stack view, so add 2 x Spacing
-				elementsHeight += theStackView.spacing * 2
-				
-				// add stack view's Spacing again, for some "padding" below the bottom view
-				elementsHeight += theStackView.spacing
-				
-				// subtract keyboard height + otherSpace from window height to get max text view height before scrolling
+				// subtract elementsHeight from window height to get max text view height before scrolling
 				maxTextViewHeight = window.height - elementsHeight
-				
+
 				// update the text view's height constraint
 				textViewHeightConstraint.constant = maxTextViewHeight
+
+				// this will trigger another auto-layout pass to update the frame
 				theTextView.setNeedsUpdateConstraints()
 			}
 		}
@@ -141,34 +150,17 @@ class ViewController: UIViewController {
 	}
 	
 	func kbWillShow(notification: Notification) {
-		isKeyboardShowing = true
+		isBeingEdited = true
 		
 		if let keyboardSize = (notification.userInfo?[UIKeyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue,
 			let window = self.view.window?.frame {
 			
-			elementsHeight = 0
-			
-			// add top view's height
-			elementsHeight += theTopView.frame.height
-			
-			// add bottom view's height
-			elementsHeight += theBottomView.frame.height
-			
-			// add stack view's Y offset
-			elementsHeight += theStackView.frame.origin.y
-			
-			// 3 views in the stack view, so add 2 x Spacing
-			elementsHeight += theStackView.spacing * 2
-			
-			// add stack view's Spacing again, for some "padding" below the bottom view
-			elementsHeight += theStackView.spacing
-			
-			// subtract keyboard height + otherSpace from window height to get max text view height before scrolling
+			// subtract keyboard height + elementsHeight from window height to get max text view height before scrolling
 			maxTextViewHeight = window.height - (keyboardSize.height + elementsHeight)
 			
 			// update the text view's height constraint
 			textViewHeightConstraint.constant = maxTextViewHeight
-			
+
 			// this will trigger another auto-layout pass to update the frame
 			theTextView.setNeedsUpdateConstraints()
 
@@ -176,6 +168,23 @@ class ViewController: UIViewController {
 	}
 	
 	func kbWillHide(notification: Notification) {
-		isKeyboardShowing = false
+		isBeingEdited = false
+
+		if let window = self.view.window?.frame {
+			
+			// disable scrolling to update the text view height
+			// if it needs to scroll, scrolling will be re-enabled by the observer
+			theTextView.isScrollEnabled = false
+			
+			// subtract elementsHeight from window height to get max text view height before scrolling
+			maxTextViewHeight = window.height - elementsHeight
+			
+			// update the text view's height constraint
+			textViewHeightConstraint.constant = maxTextViewHeight
+
+			// this will trigger another auto-layout pass to update the frame
+			theTextView.setNeedsUpdateConstraints()
+			
+		}
 	}
 }
