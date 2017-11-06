@@ -35,7 +35,7 @@
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
-                                    <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" text="The UITextView - Height Constraint &lt;= 240" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="mee-kC-lu4">
+                                    <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" text="The UITextView - Height Constraint &lt;= 40" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="mee-kC-lu4">
                                         <rect key="frame" x="0.0" y="55" width="327" height="33"/>
                                         <color key="backgroundColor" red="0.40000000600000002" green="1" blue="0.40000000600000002" alpha="1" colorSpace="calibratedRGB"/>
                                         <constraints>
@@ -78,7 +78,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="wLm-Jw-KDO" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1092" y="-79.610194902548727"/>
+            <point key="canvasLocation" x="886" y="-80"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="HwS-cc-Bts">

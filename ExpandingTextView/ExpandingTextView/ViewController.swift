@@ -24,7 +24,7 @@ class ViewController: UIViewController {
 	// this will be set / updated each time the keyboard is shown
 	// and each time the layout changes
 	// so the initial value is inconsequential
-	private var maxTextViewHeight: CGFloat = 240.0;
+	private var maxTextViewHeight: CGFloat = 40.0;
 	
 	// this is a less-than-or-equal-to constraint - updated when the keyboard is shown
 	@IBOutlet weak var textViewHeightConstraint: NSLayoutConstraint!
@@ -43,9 +43,9 @@ class ViewController: UIViewController {
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		
-		// generate 7 lines of text to pre-fill the text view
+		// pre-fill the text view with a dozen or so lines of text
 		var s = ""
-		for i in 1...36 {
+		for i in 1...12 {
 			s += "\(i)\n"
 		}
 		s += "end of text"
