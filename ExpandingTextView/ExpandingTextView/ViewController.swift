@@ -30,7 +30,7 @@ class ViewController: UIViewController {
 	@IBOutlet weak var textViewHeightConstraint: NSLayoutConstraint!
 	
 	let rightButtonItem = UIBarButtonItem.init(
-		title: "Done",
+		title: "Done Editing",
 		style: .done,
 		target: self,
 		action: #selector(rightButtonAction(sender:))
@@ -58,9 +58,6 @@ class ViewController: UIViewController {
 		// start observing changes to the text view's contentSize
 		theTextView.addObserver(self, forKeyPath: "contentSize", options: [.new, .old], context: &observerContext)
 		
-		if self.navigationController != nil {
-			self.navigationItem.rightBarButtonItem = rightButtonItem
-		}
 	}
 	
 	func updateElementsHeight() -> Void {
@@ -165,6 +162,12 @@ class ViewController: UIViewController {
 			theTextView.setNeedsUpdateConstraints()
 
 		}
+
+		// show "Done Editing" button in NavBar
+		if self.navigationController != nil {
+			self.navigationItem.rightBarButtonItem = rightButtonItem
+		}
+
 	}
 	
 	func kbWillHide(notification: Notification) {
@@ -186,5 +189,11 @@ class ViewController: UIViewController {
 			theTextView.setNeedsUpdateConstraints()
 			
 		}
+		
+		// hide "Done Editing" button in NavBar
+		if self.navigationController != nil {
+			self.navigationItem.rightBarButtonItem = nil
+		}
+
 	}
 }
