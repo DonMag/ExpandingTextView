@@ -36,7 +36,7 @@ class ViewController: UIViewController {
 		action: #selector(rightButtonAction(sender:))
 	)
 	
-	func rightButtonAction(sender: UIBarButtonItem) {
+	@objc func rightButtonAction(sender: UIBarButtonItem) {
 		theTextView.resignFirstResponder()
 	}
 	
@@ -138,18 +138,18 @@ class ViewController: UIViewController {
 	func setupKeyboardHandlers() {
 		NotificationCenter.default.addObserver(self,
 		                                       selector: #selector(kbWillShow(notification:)),
-		                                       name: Notification.Name.UIKeyboardWillShow,
+											   name: UIResponder.keyboardWillShowNotification,
 		                                       object: nil)
 		NotificationCenter.default.addObserver(self,
 		                                       selector: #selector(kbWillHide(notification:)),
-		                                       name: Notification.Name.UIKeyboardWillHide,
+											   name: UIResponder.keyboardWillHideNotification,
 		                                       object: nil)
 	}
 	
-	func kbWillShow(notification: Notification) {
+	@objc func kbWillShow(notification: Notification) {
 		isBeingEdited = true
 		
-		if let keyboardSize = (notification.userInfo?[UIKeyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue,
+		if let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue,
 			let window = self.view.window?.frame {
 			
 			// subtract keyboard height + elementsHeight from window height to get max text view height before scrolling
@@ -170,7 +170,7 @@ class ViewController: UIViewController {
 
 	}
 	
-	func kbWillHide(notification: Notification) {
+	@objc func kbWillHide(notification: Notification) {
 		isBeingEdited = false
 
 		if let window = self.view.window?.frame {
